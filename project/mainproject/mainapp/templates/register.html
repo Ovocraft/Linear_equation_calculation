@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+{% load static %}
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>login</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css\semantic.css' %}">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class="ui center aligned header" style="position: relative; margin-top: 10px;">
+            <h1 style="position: relative; ">用户注册页面</h1>
+        </div>
+        <div class="ui center aligned segment" style="display: flex; justify-content: center; align-items: center;">
+            <form class="ui tiny form" method="post" style=" width: 50%; height: 50%;">
+                <div class="field">
+                    <label for="{{ form.username.id_for_label }}">用户名</label>
+                    <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="your-css-class" value="{{ form.username.value|default:'' }}" style="width: 200px;" />
+                </div>
+                
+                <div class="field">
+                    <label for="{{ form.password1.id_for_label }}">密码</label>
+                    <input type="password" name="{{ form.password1.name }}" id="{{ form.password1.id_for_label }}" class="your-css-class" value="{{ form.password1.value|default:'' }}" style="width: 200px;" />
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.password2.id_for_label }}">再次确认密码</label>
+                    <input type="password" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" class="your-css-class" value="{{ form.password2.value|default:'' }}" style="width: 200px;" />
+                </div>
+
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="ui red message">{{ error }}</div>
+                    {% endfor %}
+                {% endfor %}
+
+
+                <div class="ui divider"></div>
+                {% csrf_token %} 
+                <button type="submit" class="ui blue button">注册</button>
+                <button class="ui white button"><a href="/">返回登录</a></button>
+            </form>
+        </div>
+
+        <div id="draggable" style="width: 200px; height: 100px; background-color: rgba(245, 239, 239, 0); border: none; position: absolute; user-select: none;">
+            <p style="text-align: center; padding: 10px; margin: 0; color: #33c8e9;">小2班29号俞文鼎</p>
+        </div>        
+        
+        <script>
+            const box = document.getElementById('draggable');
+            let x = 0, y = 0;
+            let directionX = 1, directionY = 1;
+            const speed = 0.1;
+
+            function animate() {
+            // 更新坐标
+            x += directionX * speed;
+            y += directionY * speed;
+
+            // 达到边界时改变方向
+            if (x > window.innerWidth - 200 || x < 0) {
+                directionX *= -1;
+            }
+            if (y > window.innerHeight - 100 || y < 0) {
+                directionY *= -1;
+            }
+
+            // 设置元素位置
+            box.style.left = x + 'px';
+            box.style.top = y + 'px';
+
+            requestAnimationFrame(animate);
+            }
+
+            requestAnimationFrame(animate);
+        </script>
+    </body>
+</html>

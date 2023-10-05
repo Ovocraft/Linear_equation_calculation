@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% load static %}
+{% load extra_tags %}
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>calculate</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css\semantic.css' %}">
+    </head>
+    <div>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class="ui center aligned header" style="margin-top: 50px; position: relative;user-select: none;">
+            <h3>用户 {{ request.user.username }} 还剩余计算次数 {{ count }}</h3>
+        </div>
+        <div class="ui segment" style="display: flex; justify-content: center; align-items: center;">
+            <form class="ui tiny form" method="post">
+                <div class="field">
+                    <label for="{{ form.row.id_for_label }}">请输入未知数个数</label>
+                    <input type="text" name="{{ form.row.name }}" id="{{ form.row.id_for_label }}" class="ui tiny form" value="{{ form.row.value|default:'' }}" />
+                </div>
+                
+                <div class="field">
+                    <label for="{{ form.line.id_for_label }}">请输入约束方程组的个数</label>
+                    <input type="text" name="{{ form.line.name }}" id="{{ form.line.id_for_label }}" class="ui tiny form" value="{{ form.line.value|default:'' }}" />
+                </div>
+                <div class="ui divider"></div>
+                {% csrf_token %} 
+                <button type="submit" class="ui tiny blue button">提交数据</button>
+                <button class="ui tiny white button"><a href="{% url 'logout' %}">退出登录</a></button>
+            </form>
+        </div>
+
+        <div id="draggable" style="width: 200px; height: 100px; background-color: rgba(245, 239, 239, 0); border: none; position: absolute; user-select: none;">
+            <p style="text-align: center; padding: 10px; margin: 0; color: #33c8e9;">小2班29号俞文鼎</p>
+        </div>   
+
+        
+        <script>
+            const box = document.getElementById('draggable');
+            let x = 0, y = 0;
+            let directionX = 1, directionY = 1;
+            const speed = 0.1;
+
+            function animate() {
+            // 更新坐标
+            x += directionX * speed;
+            y += directionY * speed;
+
+            // 达到边界时改变方向
+            if (x > window.innerWidth - 200 || x < 0) {
+                directionX *= -1;
+            }
+            if (y > window.innerHeight - 100 || y < 0) {
+                directionY *= -1;
+            }
+
+            // 设置元素位置
+            box.style.left = x + 'px';
+            box.style.top = y + 'px';
+
+            requestAnimationFrame(animate);
+            }
+
+            requestAnimationFrame(animate);
+        </script>
+    </body>
+</html>

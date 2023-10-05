@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  web:
+    build:  ./project
+    networks:
+      - my_custom_network
+    ports:
+      - "8000:8000"
+  
+  selenium-hub:
+    image: selenium/hub
+    networks:
+      - my_custom_network
+    ports:
+      - "4444:4444"
+
+  chrome:
+    image: selenium/node-chrome-debug
+    depends_on:
+      - selenium-hub
+    environment:
+      HUB_HOST: selenium-hub
+    networks:
+      - my_custom_network
+
+  firefox:
+    image: selenium/node-firefox-debug
+    depends_on:
+      - selenium-hub
+    environment:
+      HUB_HOST: selenium-hub
+    networks:
+      - my_custom_network
+
+networks:
+  my_custom_network:
+    driver: bridge
+      

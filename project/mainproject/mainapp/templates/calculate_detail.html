@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+{% load static %}
+{% load extra_tags %}
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>calculate detail</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'css\semantic.css' %}">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->        
+        <div class="ui center aligned segment">
+            <h2 class="ui center aligned header">这是你的目标函数</h2>
+            Max Z=
+            {% for zuizhi in zuizhi %}
+                {{ zuizhi.value }}<span class="X-placeholder">x</span>{% if not forloop.last %} + {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div class="ui center aligned segment">
+            <h2 class="ui center aligned header">这是你的约束条件</h2>
+            {% for yueshu in yueshu %}
+                <div class="equation-container">
+                    {% for coefficient in yueshu.coefficients.all %}  
+                        {{ coefficient.value }}<span class="X-placeholder">x</span>{% if not forloop.last %} + {% endif %}               
+                    {% endfor %}                   
+                    {{ yueshu.sign }} {{ yueshu.constraint_value }}
+                </div>
+                <div class="ui divider"> </div>
+            {% endfor %}
+        </div>
+        
+        <div class="ui center aligned segment">
+            <h2 class="ui center aligned header">这是你的结果</h2>
+            {% if solve.status == "Infeasible" %}
+                <p>无可行解</p>
+            {% else %}
+            {% for var_name, value in solve.solution.items %}
+                {{ var_name }} = {{ value }},&nbsp&nbsp&nbsp&nbsp
+            {% endfor %}
+        {% endif %}
+        </div>
+
+        <div class="ui basic center aligned segment">
+            <div class="ui white button"><a href="{% url 'calculate_page' %}">重新计算</a></div>
+            <button class="ui white button"><a href="{% url 'logout' %}">退出登录</a></button>
+        </div>
+
+        <div id="draggable" style="width: 200px; height: 100px; background-color: rgba(245, 239, 239, 0); border: none; position: absolute; user-select: none;">
+            <p style="text-align: center; padding: 10px; margin: 0; color: #33c8e9;">小2班29号俞文鼎</p>
+        </div>    
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const equationContainers = document.querySelectorAll('.equation-container');
+        
+                // 遍历每个方程容器
+                equationContainers.forEach(container => {
+                    let counter = 1;
+                    const xPlaceholders = container.querySelectorAll('.X-placeholder');
+                    xPlaceholders.forEach(xElem => {
+                        xElem.textContent = `x${counter}`;
+                        counter++;
+                    });
+                });
+            });
+
+            const box = document.getElementById('draggable');
+            let x = 0, y = 0;
+            let directionX = 1, directionY = 1;
+            const speed = 0.2;
+
+            function animate() {
+                // 更新坐标
+                x += directionX * speed;
+                y += directionY * speed;
+
+                // 达到边界时改变方向
+                if (x > window.innerWidth - 200 || x < 0) {
+                    directionX *= -1;
+                }
+                if (y > window.innerHeight - 100 || y < 0) {
+                    directionY *= -1;
+                }
+
+                // 设置元素位置
+                box.style.left = x + 'px';
+                box.style.top = y + 'px';
+
+                requestAnimationFrame(animate);
+            }
+            requestAnimationFrame(animate);
+
+        </script>
+    </body>
+</html>
